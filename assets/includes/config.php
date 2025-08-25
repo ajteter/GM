@@ -19,4 +19,5 @@ $dbGM['pass'] = 'AVNS_jgcJdm8cOsFwKP5AjsL';
 $encryption = "vmbtrvw95105595885345**#3738s**A";
 
 
+
 #dont forget to add in deatabase gm_settings your domain website or else will not open other page except home page
