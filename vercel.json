@@ -1,13 +1,25 @@
-    {
-      "functions": {
-        "api/index.php": {
-          "runtime": "vercel-php@0.7.2"
-        }
-      },
-      "routes": [
-        {
-          "src": "/(.*)",
-          "dest": "/api/index.php"
-        }
-      ]
+{
+  "functions": {
+    "api/index.php": {
+      "runtime": "vercel-php@0.7.2"
     }
+  },
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/templates/(.*)",
+      "dest": "/templates/$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.php"
+    }
+  ]
+}
