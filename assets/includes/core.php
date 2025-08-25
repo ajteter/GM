@@ -19,9 +19,31 @@ if ( td_installing() ) {
     require_once ABSPATH . 'assets/includes/tables.php';
 
     /**
-    * Connecting to MySql server
+    * Connecting to MySql server (with optional SSL for Aiven)
     */
-    $GameMonetizeConnect = @new mysqli($dbGM['host'], $dbGM['user'], $dbGM['pass'], $dbGM['name']);
+    $mysqli_link = mysqli_init();
+    $db_port = getenv('DB_PORT') ? (int) getenv('DB_PORT') : 3306;
+    $ssl_mode = getenv('DB_SSL_MODE') ? getenv('DB_SSL_MODE') : 'REQUIRED';
+    $ssl_ca_env = getenv('DB_SSL_CA');
+
+    if ($ssl_ca_env) {
+        $ca_path = sys_get_temp_dir() . '/aiven-ca.pem';
+        if (!file_exists($ca_path)) {
+            @file_put_contents($ca_path, $ssl_ca_env);
+        }
+        @mysqli_ssl_set($mysqli_link, null, null, $ca_path, null, null);
+        @mysqli_options($mysqli_link, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
+        $client_flags = MYSQLI_CLIENT_SSL;
+    } else {
+        // Require SSL but allow skipping server cert verification if CA not provided
+        @mysqli_options($mysqli_link, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+        $client_flags = MYSQLI_CLIENT_SSL;
+    }
+
+    if (!@mysqli_real_connect($mysqli_link, $dbGM['host'], $dbGM['user'], $dbGM['pass'], $dbGM['name'], $db_port, null, $client_flags)) {
+        exit(mysqli_connect_errno());
+    }
+    $GameMonetizeConnect = $mysqli_link;
 
     /**
     * Set up connection charset
@@ -1849,10 +1871,31 @@ function installDefaultGames(){
     include ABSPATH . 'assets/includes/tables.php';
         
     /**
-    * Connecting to MySql server
+    * Connecting to MySql server (with optional SSL for Aiven)
     */
     global $GameMonetizeConnect;
-    $GameMonetizeConnect = @new mysqli($dbGM['host'], $dbGM['user'], $dbGM['pass'], $dbGM['name']);
+    $mysqli_link = mysqli_init();
+    $db_port = getenv('DB_PORT') ? (int) getenv('DB_PORT') : 3306;
+    $ssl_mode = getenv('DB_SSL_MODE') ? getenv('DB_SSL_MODE') : 'REQUIRED';
+    $ssl_ca_env = getenv('DB_SSL_CA');
+
+    if ($ssl_ca_env) {
+        $ca_path = sys_get_temp_dir() . '/aiven-ca.pem';
+        if (!file_exists($ca_path)) {
+            @file_put_contents($ca_path, $ssl_ca_env);
+        }
+        @mysqli_ssl_set($mysqli_link, null, null, $ca_path, null, null);
+        @mysqli_options($mysqli_link, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
+        $client_flags = MYSQLI_CLIENT_SSL;
+    } else {
+        @mysqli_options($mysqli_link, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+        $client_flags = MYSQLI_CLIENT_SSL;
+    }
+
+    if (!@mysqli_real_connect($mysqli_link, $dbGM['host'], $dbGM['user'], $dbGM['pass'], $dbGM['name'], $db_port, null, $client_flags)) {
+        exit(mysqli_connect_errno());
+    }
+    $GameMonetizeConnect = $mysqli_link;
     /**
     * Set up connection charset
     */
