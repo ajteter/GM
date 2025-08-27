@@ -14,22 +14,8 @@
     { "src": "/games-image/(.*)", "dest": "/games-image/$1" },
     { "src": "/games-thumb-video/(.*)", "dest": "/games-thumb-video/$1" },
     { "src": "/tag-img/(.*)", "dest": "/tag-img/$1" },
-    { "src": "/lite$,", "dest": "/lite/index.php" },
-    { "src": "/$", "dest": "/lite/index.php" },
+    { "src": "^/lite$", "dest": "/lite/index.php" },
+    { "src": "^/$", "dest": "/lite/index.php" },
     { "src": "^(?!/lite/|/templates/|/static/|/assets/|/games-image/|/games-thumb-video/|/tag-img/).*$", "dest": "/lite/index.php" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico|css|js|mp4))$",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
-      "source": "/lite/games.json",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=60, stale-while-revalidate=300" }
-      ]
-    }
   ]
 }
