@@ -1,14 +1,36 @@
 'use client'
-import { useMemo, useState } from 'react'
-import { games } from '../../games.ts'
+import { useMemo, useState, useEffect } from 'react'
+import { games } from '../../games'
 import Link from 'next/link'
 
 export default function PlayPage({ params }: { params: { id: string } }) {
   const game = useMemo(() => (games as any[]).find(g => g.id === params.id), [params.id])
   const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    if (loaded && game) {
+      const scriptId = 'gamemonetize-video-api';
+      if (document.getElementById(scriptId)) return;
+
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.src = `https://api.gamemonetize.com/video.js?v=${Date.now()}`;
+      script.async = true;
+      document.head.appendChild(script);
+
+      (window as any).VIDEO_OPTIONS = {
+        gameid: game.id,
+        width: "100%",
+        height: "100%",
+        color: "#3f007e"
+      };
+    }
+  }, [loaded, game]);
+
   if (!game) {
     return <main className="container"><p>Game not found.</p></main>
   }
+
   return (
     <main className="container">
       <Link className="back" href="/">← Back</Link>
