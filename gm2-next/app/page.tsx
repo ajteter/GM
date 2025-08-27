@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import games from '../public/games.json'
+import { games } from './games.ts'
 
 const PER_PAGE = 30
 

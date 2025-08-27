@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'GM2 Next',
-  description: 'Fast webview-friendly arcade list',
+  title: '',
+  description: '',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

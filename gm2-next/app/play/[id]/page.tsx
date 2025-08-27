@@ -1,6 +1,6 @@
 'use client'
 import { useMemo, useState } from 'react'
-import games from '../../../public/games.json'
+import { games } from '../../games.ts'
 import Link from 'next/link'
 
 export default function PlayPage({ params }: { params: { id: string } }) {
