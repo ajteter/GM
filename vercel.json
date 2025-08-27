@@ -1,25 +1,35 @@
 {
   "functions": {
+    "lite/**/*.php": {
+      "runtime": "vercel-php@0.7.2"
+    },
     "api/index.php": {
       "runtime": "vercel-php@0.7.2"
     }
   },
   "routes": [
+    { "src": "/static/(.*)", "dest": "/static/$1" },
+    { "src": "/templates/(.*)", "dest": "/templates/$1" },
+    { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/games-image/(.*)", "dest": "/games-image/$1" },
+    { "src": "/games-thumb-video/(.*)", "dest": "/games-thumb-video/$1" },
+    { "src": "/tag-img/(.*)", "dest": "/tag-img/$1" },
+    { "src": "/lite$,", "dest": "/lite/index.php" },
+    { "src": "/$", "dest": "/lite/index.php" },
+    { "src": "^(?!/lite/|/templates/|/static/|/assets/|/games-image/|/games-thumb-video/|/tag-img/).*$", "dest": "/lite/index.php" }
+  ],
+  "headers": [
     {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
+      "source": "/(.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico|css|js|mp4))$",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
     },
     {
-      "src": "/templates/(.*)",
-      "dest": "/templates/$1"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/index.php"
+      "source": "/lite/games.json",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=60, stale-while-revalidate=300" }
+      ]
     }
   ]
 }
